@@ -13,8 +13,10 @@ return new class extends Migration
     {
         Schema::create('tipo_pizza', function (Blueprint $table) {
             $table->id();
-            $table->string('categoria');
+            $table->string('sabor');
+            $table->string('tamanho');
             $table->string('tipo');
+            $table->double('preco');
             $table->timestamps();
             
         });

@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\TipoPizzaRequest;
 use App\Models\TipoPizza;
+use Illuminate\Http\Request;
+
+
 
 class TipoPizzaController extends Controller
 {
@@ -12,7 +15,13 @@ class TipoPizzaController extends Controller
      */
     public function index()
     {
-    
+        $pizza = TipoPizzaRequest::select('id', 'sabor', 'tamanho', 'tipo', 'preco' )->paginate('2');
+
+        return [
+            'status' => 200,
+            'menssagem' => 'Pizzas encontradas',
+            'pizza' => $pizza
+        ];
     }
 
     /**
@@ -29,22 +38,23 @@ class TipoPizzaController extends Controller
     public function store(Request $request)
     {
         try {
-            $data = $request->all();
-
-            $tipo = TipoPizza::create([
-                'tipo' => $data['name'],
-                'categoria' => $data['categotia'],
+            $pizza = $request->all();
+            $pizza = TipoPizza::create([
+                'sabor' => $pizza['sabor'],
+                'tamanho' => $pizza['tamanho'],
+                'tipo' => $pizza['tipo'],
+                'preco' => $pizza['preco'],
             ]);
 
             return[
             'status' => 200,
-            'menssagem' => 'Usuário cadastrado com sucesso!!',
-            'tipo' => $tipo
+            'menssagem' => 'Pizza Cadastrada com sucesso sucesso!!',
+            'pizza' => $pizza
             ];
         } catch (\Exception $e) {
             return [
                 'status' => 400,
-                'menssagem' => 'Erro ao atualizar usuário!!',
+                'menssagem' => 'Erro ao atualizar a pizza!!',
                 'error' => $e->getMessage()
             ];
         }
@@ -55,7 +65,16 @@ class TipoPizzaController extends Controller
      */
     public function show(string $id)
     {
-        //
+        try  {
+            $pizza = TipoPizza::findOrFail($id);
+            return [$pizza];
+    } catch (\Exception $e) {  
+        return [
+        'status' => 400,
+        'menssagem' => 'Pizza nao encontrada!!',
+        'error' => $e->getMessage()
+        ];
+     }
     }
 
     /**
@@ -72,6 +91,28 @@ class TipoPizzaController extends Controller
     public function update(Request $request, string $id)
     {
         //
+        try {
+            $data = $request->all();
+
+            $pizza = TipoPizza::find($id);
+
+            $pizza->update([
+                'sabor' => $data['sabor'],
+                'tamanho' => $data['tamanho'],
+                'tipo' => $data['tipo']
+            ]);
+            return [
+                'status' => 200,
+                'menssagem' => 'Pizza atualizada com sucesso sucesso!!',
+                'pizza' => $pizza
+            ];
+        }  catch (\Exception $e) {
+        return [
+            'status' => 400,
+            'menssagem' => 'Erro ao atualizar pizza!!',
+            'error' => $e->getMessage()
+            ];
+        }
     }
 
     /**
@@ -80,5 +121,23 @@ class TipoPizzaController extends Controller
     public function destroy(string $id)
     {
         //
+         //
+         try {
+            $pizza = TipoPizza::find($id);
+
+            $pizza->delete();
+
+            return [
+                'status' => 200,
+                'menssagem' => 'Pizza deletada com sucesso!!',
+                'pizza' => $pizza
+            ];
+        } catch (\Exception $e) {
+            return [
+                'status' => 400,
+                'menssagem' => 'Erro ao deletar usuário!!',
+                'error' => $e->getMessage()
+            ];
+        }
     }
 }

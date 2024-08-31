@@ -7,10 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class TipoPizza extends Model
 {
-    use HasFactory, Notifiable;
+    use HasFactory;
 
+    protected $table = "tipo_pizza";
     protected $fillable = [
+        'sabor',
+        'tamanho',
         'tipo',
-        'categoria',
-    ]
+        'preco',
+    ];
 }
