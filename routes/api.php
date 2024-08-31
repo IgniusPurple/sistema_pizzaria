@@ -12,4 +12,4 @@ Route::prefix('/user')->group(function (){
     Route::delete('/deletar/{id}', [UserController::class, 'destroy']);
 });
 
-Route::prefiz()
+Route::prefix();
